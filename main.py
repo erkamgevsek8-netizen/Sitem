@@ -105,7 +105,7 @@ def xox_oyunu():
     </body></html>
     """
 
-# --- YILAN OYUNU ---
+# --- YILAN OYUNU (Izgaralı ve Düzeltilmiş) ---
 @app.route('/snake')
 def snake():
     return """
@@ -115,15 +115,23 @@ def snake():
         <h2 id="scoreBoard">Puan: 0</h2>
         <button onclick="toggleMusic()">🔊 Müzik Aç/Kapat</button>
         <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-        <canvas id="gameCanvas" width="400" height="400" style="background:black; display:block; margin:20px auto;"></canvas>
+        <canvas id="gameCanvas" width="400" height="400" style="background:black; border:2px solid white; display:block; margin:20px auto;"></canvas>
         <script>
             function toggleMusic(){ let m=document.getElementById('bgMusic'); m.paused ? m.play() : m.pause(); }
             const canvas = document.getElementById("gameCanvas");
             const ctx = canvas.getContext("2d");
             let snake = [{x: 200, y: 200}], dx = 20, dy = 0, food = {x: 100, y: 100}, score = 0;
             
+            function drawGrid() {
+                ctx.strokeStyle = "#333";
+                for(let i=0; i<400; i+=20) {
+                    ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,400); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(400,i); ctx.stroke();
+                }
+            }
             function draw(){
                 ctx.fillStyle = "black"; ctx.fillRect(0,0,400,400);
+                drawGrid();
                 ctx.fillStyle = "red"; ctx.fillRect(food.x, food.y, 20, 20);
                 ctx.fillStyle = "lime";
                 snake.forEach(part => ctx.fillRect(part.x, part.y, 20, 20));
@@ -136,7 +144,10 @@ def snake():
                     food = {x: Math.floor(Math.random()*20)*20, y: Math.floor(Math.random()*20)*20};
                 } else { snake.pop(); }
                 
-                if(head.x<0 || head.x>=400 || head.y<0 || head.y>=400) { alert("Oyun Bitti! Skorun: " + score); location.reload(); }
+                if(head.x<0 || head.x>=400 || head.y<0 || head.y>=400) { 
+                    alert("Oyun Bitti! Skorun: " + score); 
+                    snake = [{x: 200, y: 200}]; dx = 20; dy = 0; score = 0; document.getElementById("scoreBoard").innerText = "Puan: 0";
+                }
                 setTimeout(draw, 100);
             }
             document.addEventListener("keydown", e => {
