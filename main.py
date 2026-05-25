@@ -105,33 +105,32 @@ def xox_oyunu():
     </body></html>
     """
 
-# --- YILAN OYUNU (Izgaralı ve Düzeltilmiş) ---
+# --- YILAN OYUNU ---
 @app.route('/snake')
 def snake():
     return """
-    <html><body style="background:#2c3e50; color:white; text-align:center; font-family:sans-serif;">
+    <html><body style="background:#2c3e50; color:white; text-align:center; font-family:sans-serif; overflow:hidden;">
         <a href='/' style='position:absolute; top:10px; left:10px; font-size:40px; text-decoration:none;'>🏠</a>
         <h1>Yılan Oyunu</h1>
         <h2 id="scoreBoard">Puan: 0</h2>
         <button onclick="toggleMusic()">🔊 Müzik Aç/Kapat</button>
-        <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-        <canvas id="gameCanvas" width="400" height="400" style="background:black; border:2px solid white; display:block; margin:20px auto;"></canvas>
+        <p style="font-size:12px;">(Telefonda hareket için ekrana tıkla)</p>
+        <canvas id="gameCanvas" width="400" height="400" style="background:black; border:2px solid white; display:block; margin:10px auto;"></canvas>
+        <div style="display:grid; grid-template-columns: 80px 80px 80px; gap:10px; justify-content:center;">
+            <div></div><button onclick="setDir(0,-20)" style="padding:15px;">⬆️</button><div></div>
+            <button onclick="setDir(-20,0)" style="padding:15px;">⬅️</button><button onclick="setDir(0,20)" style="padding:15px;">⬇️</button><button onclick="setDir(20,0)" style="padding:15px;">➡️</button>
+        </div>
         <script>
             function toggleMusic(){ let m=document.getElementById('bgMusic'); m.paused ? m.play() : m.pause(); }
             const canvas = document.getElementById("gameCanvas");
             const ctx = canvas.getContext("2d");
             let snake = [{x: 200, y: 200}], dx = 20, dy = 0, food = {x: 100, y: 100}, score = 0;
+            function setDir(x,y){ if((x!=0 && dy==0) || (y!=0 && dx==0)){ dx=x; dy=y; } }
             
-            function drawGrid() {
-                ctx.strokeStyle = "#333";
-                for(let i=0; i<400; i+=20) {
-                    ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,400); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(400,i); ctx.stroke();
-                }
-            }
             function draw(){
                 ctx.fillStyle = "black"; ctx.fillRect(0,0,400,400);
-                drawGrid();
+                ctx.strokeStyle = "#222";
+                for(let i=0; i<400; i+=20) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,400); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(400,i); ctx.stroke(); }
                 ctx.fillStyle = "red"; ctx.fillRect(food.x, food.y, 20, 20);
                 ctx.fillStyle = "lime";
                 snake.forEach(part => ctx.fillRect(part.x, part.y, 20, 20));
@@ -150,7 +149,7 @@ def snake():
                 }
                 setTimeout(draw, 100);
             }
-            document.addEventListener("keydown", e => {
+            window.addEventListener("keydown", e => {
                 if(e.key==="ArrowUp" && dy===0) { dx=0; dy=-20; }
                 else if(e.key==="ArrowDown" && dy===0) { dx=0; dy=20; }
                 else if(e.key==="ArrowLeft" && dx===0) { dx=-20; dy=0; }
@@ -158,6 +157,7 @@ def snake():
             });
             draw();
         </script>
+        <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
     </body></html>
     """
 
