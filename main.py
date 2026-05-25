@@ -78,7 +78,7 @@ def xox_oyunu():
     </body></html>
     """
 
-# --- YILAN OYUNU (Düzeltilmiş Başlatma ve Reset) ---
+# --- YILAN OYUNU ---
 @app.route('/snake')
 def snake():
     return """
@@ -100,7 +100,7 @@ def snake():
             let snake = [{x: 200, y: 200}], dx = 0, dy = 0, food = {x: 100, y: 100}, score = 0, gameActive = false;
             
             function setDir(x,y){ 
-                if(!gameActive) gameActive = true;
+                gameActive = true;
                 if((x!=0 && dx==0) || (y!=0 && dy==0)){ dx=x; dy=y; } 
             }
             document.getElementById("up").onclick = () => setDir(0, -20);
@@ -120,7 +120,7 @@ def snake():
                     if(head.x==food.x && head.y==food.y){ 
                         score+=10; document.getElementById("scoreBoard").innerText="Puan: "+score; 
                         food={x:Math.floor(Math.random()*20)*20, y:Math.floor(Math.random()*20)*20}; 
-                    } else snake.pop();
+                    } else if(dx!=0 || dy!=0) { snake.pop(); }
                     
                     if(head.x<0||head.x>=400||head.y<0||head.y>=400){ 
                         alert("Oyun Bitti! Skor: "+score); 
