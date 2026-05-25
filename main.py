@@ -57,4 +57,98 @@ def xox_oyunu():
             <div class="c" id="5" onclick="p(5)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
             <div class="c" id="6" onclick="p(6)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
             <div class="c" id="7" onclick="p(7)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
-            <div class="c" id="8" onclick="p(8)" style="width:100px; height:100px;
+            <div class="c" id="8" onclick="p(8)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+        </div>
+        <script>
+            let board = Array(9).fill(null);
+            const mod = new URLSearchParams(window.location.search).get('mod');
+            function toggleMusic(){ let m=document.getElementById('bgMusic'); m.paused ? m.play() : m.pause(); }
+            function p(i){
+                if(!board[i]){
+                    board[i] = 'X'; document.getElementById(i).innerText = 'X';
+                    if(!check('X')) setTimeout(robot, 300);
+                }
+            }
+            function robot(){
+                let empty = board.map((v,i)=>v===null?i:null).filter(v=>v!==null);
+                let move;
+                if(mod==='easy') move = empty[Math.floor(Math.random()*empty.length)];
+                else if(mod==='medium') {
+                    move = findWinningMove('O') || empty[Math.floor(Math.random()*empty.length)];
+                } else {
+                    move = findWinningMove('O') || findWinningMove('X') || empty[Math.floor(Math.random()*empty.length)];
+                }
+                board[move] = 'O'; document.getElementById(move).innerText = 'O';
+                check('O');
+            }
+            function findWinningMove(p){
+                const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+                for(let i of w){
+                    let cells = [board[i[0]], board[i[1]], board[i[2]]];
+                    if(cells.filter(c=>c===p).length===2 && cells.includes(null)) return i[cells.indexOf(null)];
+                }
+                return null;
+            }
+            function checkWinner(){
+                const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+                for(let i of w){
+                    if(board[i[0]] && board[i[0]]===board[i[1]] && board[i[1]]===board[i[2]]) return board[i[0]];
+                }
+                return board.includes(null) ? null : 'Tie';
+            }
+            function check(p){
+                let res = checkWinner();
+                if(res) { setTimeout(()=>alert(res==='Tie'?'Berabere!':res+' Kazandı!'), 100); location.reload(); return true; }
+                return false;
+            }
+        </script>
+    </body></html>
+    """
+
+# --- YILAN OYUNU ---
+@app.route('/snake')
+def snake():
+    return """
+    <html><body style="background:#2c3e50; color:white; text-align:center; font-family:sans-serif;">
+        <a href='/' style='position:absolute; top:10px; left:10px; font-size:40px; text-decoration:none;'>🏠</a>
+        <h1>Yılan Oyunu</h1>
+        <h2 id="scoreBoard">Puan: 0</h2>
+        <button onclick="toggleMusic()">🔊 Müzik Aç/Kapat</button>
+        <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+        <canvas id="gameCanvas" width="400" height="400" style="background:black; display:block; margin:20px auto;"></canvas>
+        <script>
+            function toggleMusic(){ let m=document.getElementById('bgMusic'); m.paused ? m.play() : m.pause(); }
+            const canvas = document.getElementById("gameCanvas");
+            const ctx = canvas.getContext("2d");
+            let snake = [{x: 200, y: 200}], dx = 20, dy = 0, food = {x: 100, y: 100}, score = 0;
+            
+            function draw(){
+                ctx.fillStyle = "black"; ctx.fillRect(0,0,400,400);
+                ctx.fillStyle = "red"; ctx.fillRect(food.x, food.y, 20, 20);
+                ctx.fillStyle = "lime";
+                snake.forEach(part => ctx.fillRect(part.x, part.y, 20, 20));
+                
+                let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+                snake.unshift(head);
+                if(head.x === food.x && head.y === food.y) {
+                    score += 10;
+                    document.getElementById("scoreBoard").innerText = "Puan: " + score;
+                    food = {x: Math.floor(Math.random()*20)*20, y: Math.floor(Math.random()*20)*20};
+                } else { snake.pop(); }
+                
+                if(head.x<0 || head.x>=400 || head.y<0 || head.y>=400) { alert("Oyun Bitti! Skorun: " + score); location.reload(); }
+                setTimeout(draw, 100);
+            }
+            document.addEventListener("keydown", e => {
+                if(e.key==="ArrowUp" && dy===0) { dx=0; dy=-20; }
+                else if(e.key==="ArrowDown" && dy===0) { dx=0; dy=20; }
+                else if(e.key==="ArrowLeft" && dx===0) { dx=-20; dy=0; }
+                else if(e.key==="ArrowRight" && dx===0) { dx=20; dy=0; }
+            });
+            draw();
+        </script>
+    </body></html>
+    """
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000)
