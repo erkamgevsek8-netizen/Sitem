@@ -40,4 +40,39 @@ def oyunlar():
     <html>
     <body style="background:#2c3e50; color:white; text-align:center; font-family:sans-serif;">
         <h1>Oyun Seçiniz</h1>
-        <div style="
+        <div style="margin-top:50px;">
+            <a href="/xox-oyunu" style="color:yellow; font-size:30px; text-decoration:none;">Tic Tac Toe (XOX)</a>
+        </div>
+        <br><br>
+        <a href='/' style='color:white; text-decoration:none;'>Geri Dön</a>
+    </body>
+    </html>
+    """
+
+# XOX OYUNU
+@app.route('/xox-oyunu')
+def xox_oyunu():
+    return """
+    <html>
+    <head><title>Tic Tac Toe</title></head>
+    <body style="background:#2c3e50; color:white; text-align:center; font-family:sans-serif;">
+        <h1>Tic Tac Toe</h1>
+        <div id="board" style="display:grid; grid-template-columns:repeat(3, 100px); gap:10px; justify-content:center;">
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+            <div onclick="p(this)" style="width:100px; height:100px; background:white; color:black; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer;"></div>
+        </div>
+        <script>let t='X'; function p(c){if(!c.innerText){c.innerText=t; t=t==='X'?'O':'X';}}</script>
+        <br><br><a href='/oyunlar' style='color:yellow; text-decoration:none;'>Oyunlar Menüsüne Dön</a>
+    </body>
+    </html>
+    """
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000)
